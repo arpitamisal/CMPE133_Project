@@ -15,28 +15,33 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 
-function Login(props) {
+function SignUp(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const auth = FIREBASE_AUTH;
 
-  const signIn = async () => {
+  const signIn = () => {
+    // Navigate to another screen for Login
+    props.navigation.navigate("Login");
+  };
+
+  const signUp = async () => {
     setLoading(true);
     try {
-      const response = await signInWithEmailAndPassword(auth, email, password);
+      const response = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       console.log(response);
+      alert("Check your emails!");
     } catch (error) {
       console.log(error);
-      alert("Sign in failed: " + error.message);
+      alert("Registration failed: " + error.message);
     } finally {
       setLoading(false);
     }
-  };
-
-  const signUp = () => {
-    // Navigate to another screen for Sign Up
-    props.navigation.navigate("SignUp");
   };
 
   return (
@@ -164,4 +169,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default SignUp;

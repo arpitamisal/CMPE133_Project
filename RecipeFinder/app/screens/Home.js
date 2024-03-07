@@ -16,7 +16,7 @@ function Home(props) {
 
   const signUp = () => {
     // Navigate to another screen for Sign Up
-    props.navigation.navigate("Login");
+    props.navigation.navigate("SignUp");
   };
 
   return (
