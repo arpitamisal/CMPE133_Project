@@ -1,19 +1,7 @@
 import React, { useState } from "react";
-import {
-  View,
-  TextInput,
-  Text,
-  ImageBackground,
-  TouchableOpacity,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  StyleSheet,
-} from "react-native";
+import {View, TextInput, Text, ImageBackground, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, StyleSheet} from "react-native";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 function SignUp(props) {
   const [email, setEmail] = useState("");
@@ -21,29 +9,21 @@ function SignUp(props) {
   const [loading, setLoading] = useState(false);
   const auth = FIREBASE_AUTH;
 
-  const signIn = () => {
-    // Navigate to another screen for Login
-    props.navigation.navigate("Login");
-  };
-
   const signUp = async () => {
     setLoading(true);
     try {
-      const response = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      console.log(response);
-      alert("Check your emails!");
+      const response = await createUserWithEmailAndPassword(auth, email, password);
+      //console.log(response);
+      //alert("Account Created!");
+      props.navigation.navigate("Dashboard"); // Navigate to Dashboard upon successful signup
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       alert("Registration failed: " + error.message);
     } finally {
       setLoading(false);
     }
   };
-
+  
   return (
     <ImageBackground
       source={require("../../assets/images/bgi.jpg")}
@@ -80,9 +60,6 @@ function SignUp(props) {
             <ActivityIndicator size="large" color="#56CCF2" />
           ) : (
             <>
-              <TouchableOpacity style={styles.button1} onPress={signIn}>
-                <Text style={styles.buttonText}>Log In</Text>
-              </TouchableOpacity>
               <TouchableOpacity style={styles.button2} onPress={signUp}>
                 <Text style={styles.buttonText}>Sign Up</Text>
               </TouchableOpacity>

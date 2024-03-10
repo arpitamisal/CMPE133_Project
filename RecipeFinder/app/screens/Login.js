@@ -1,19 +1,7 @@
 import React, { useState } from "react";
-import {
-  View,
-  TextInput,
-  Text,
-  ImageBackground,
-  TouchableOpacity,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  StyleSheet,
-} from "react-native";
+import {View, TextInput, Text, ImageBackground, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, StyleSheet} from "react-native";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 function Login(props) {
   const [email, setEmail] = useState("");
@@ -25,18 +13,14 @@ function Login(props) {
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
-      console.log(response);
+      //console.log(response);
+      props.navigation.navigate("Dashboard"); // Navigate to Dashboard upon successful login
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       alert("Sign in failed: " + error.message);
     } finally {
       setLoading(false);
     }
-  };
-
-  const signUp = () => {
-    // Navigate to another screen for Sign Up
-    props.navigation.navigate("SignUp");
   };
 
   return (
@@ -77,9 +61,6 @@ function Login(props) {
             <>
               <TouchableOpacity style={styles.button1} onPress={signIn}>
                 <Text style={styles.buttonText}>Log In</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button2} onPress={signUp}>
-                <Text style={styles.buttonText}>Sign Up</Text>
               </TouchableOpacity>
             </>
           )}

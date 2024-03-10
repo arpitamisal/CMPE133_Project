@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  ImageBackground,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  StyleSheet,
-} from "react-native";
+import {View, Text, ImageBackground, TouchableOpacity, KeyboardAvoidingView, StyleSheet} from "react-native";
 
 function Home(props) {
   const signIn = () => {
