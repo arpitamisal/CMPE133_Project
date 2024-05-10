@@ -43,11 +43,12 @@ export default function Categories({ categories, activeCategory, setActiveCatego
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
+    maxHeight: 70,
+    marginTop: 10,
   },
   scrollViewContent: {
-    paddingHorizontal: 1,
-    maxHeight: 75,
+    paddingHorizontal: 15,
+    
   },
   categoryItem: {
     flexDirection: 'column',

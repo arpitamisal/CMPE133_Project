@@ -1,115 +1,126 @@
-import React, { useEffect, useState } from "react";
+// HomeScreen.js
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import axios from 'axios';
 import Categories from '../components/categories';
 import Recipes from '../components/recipes';
-import { View, TextInput, Text, ImageBackground, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, StyleSheet, SafeAreaView, ScrollView } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function Dashboard() {
-
+const HomeScreen = () => {
   const [activeCategory, setActiveCategory] = useState('Beef');
   const [categories, setCategories] = useState([]);
   const [meals, setMeals] = useState([]);
 
-  useEffect(()=>{
+  useEffect(() => {
     getCategories();
     getRecipes();
-  },[])
+  }, []);
 
-  const handleChangeCategory = category=>{
+  const handleChangeCategory = (category) => {
     getRecipes(category);
     setActiveCategory(category);
     setMeals([]);
-  }
-  
-  const getCategories = async ()=>{
-    try{
+  };
+
+  const getCategories = async () => {
+    try {
       const response = await axios.get('https://themealdb.com/api/json/v1/1/categories.php');
-      if(response && response.data){
-        setCategories(response.data.categories);
-      }
-    }catch(err){
-      console.log('error: ',err.message);
+      setCategories(response.data.categories);
+    } catch (err) {
+      console.log('Error:', err.message);
     }
-  }
+  };
 
-  const getRecipes = async (category="Beef")=>{
-    try{
+  const getRecipes = async (category = 'Beef') => {
+    try {
       const response = await axios.get(`https://themealdb.com/api/json/v1/1/filter.php?c=${category}`);
-      if(response && response.data){
-        setMeals(response.data.meals);
-      } 
-    }catch(err){
-      console.log('error: ',err.message);
+      setMeals(response.data.meals);
+    } catch (err) {
+      console.log('Error:', err.message);
     }
-  }
-  
+  };
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.container}>
-          {/* Tagline */}
-          <Text style={styles.tagline}>Whip Up Magic with What's on Hand</Text>
-
-          {/* Searchbar */}
-          <View style={styles.searchContainer}>
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search..."
-              placeholderTextColor="#999"
-            />
-          </View>
-
-          {/* Categories */}
-          {categories.length > 0 && (
-            <Categories
-              categories={categories}
-              activeCategory={activeCategory}
-              setActiveCategory={handleChangeCategory}
-            />
-          )}
-
-          {/* Recipes */}
-          
-          <Recipes meals={meals} categories={categories} />
-          
-
-          {/* Other components for your Dashboard */}
+    <View style={styles.container}>
+      <SafeAreaView>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.topBar}>
+          <Image source={require('../../assets/images/avatar.png')} style={styles.avatar} />
         </View>
+        <View style={styles.greetingContainer}>
+          <Text style={styles.punchline}> Whip up Magic with whats on hand <Text style={styles.greenText}>home</Text></Text>
+        </View>
+        <View style={styles.searchBar}>
+          <TextInput
+            placeholder="Search any recipe"
+            placeholderTextColor="gray"
+            style={styles.input}
+          />
+        </View>
+        <Categories categories={categories} activeCategory={activeCategory} setActiveCategory={handleChangeCategory} />
+        <Recipes meals={meals} categories={categories} />
       </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-  },
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#FFF',
+  },
+  scrollContainer: {
+    paddingBottom: 50,
+  },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 20,
+    marginTop: 10,
+  },
+  avatar: {
+    height: 30,
+    width: 30,
+  },
+  bellIcon: {
+    padding: 5,
+  },
+  greetingContainer: {
+    marginHorizontal: 20,
+    marginTop: 20,
+  },
+  greeting: {
+    fontSize: 16,
+    color: '#333',
+  },
+  punchline: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  greenText: {
+    color: '#2E8B57',
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    marginTop: 20,
+    borderRadius: 20,
+    backgroundColor: '#F5F5F5',
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    fontSize: 16,
+    color: '#333',
+  },
+  searchButton: {
     padding: 10,
   },
-  tagline: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  searchContainer: {
-    width: "80%",
-    alignItems: "center", // Center the search input horizontally
-  },
-  searchInput: {
-    width: "100%", // Set width to 100% within the search container
-    height: 40,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    paddingLeft: 10,
-    marginBottom: 20,
-  },
-  // Add more styles as needed
 });
+
+export default HomeScreen;
