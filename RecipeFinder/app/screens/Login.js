@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {View, TextInput, Text, ImageBackground, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, StyleSheet} from "react-native";
+import { View, TextInput, Text, ImageBackground, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, StyleSheet } from "react-native";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
@@ -30,11 +30,9 @@ function Login(props) {
     >
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
         <View style={styles.content}>
-          {/* Text container moved here to be below the inputs */}
+          <Text style={styles.text}>Welcome Back! </Text>
         </View>
         <View style={styles.textContainer}>
-          <Text style={styles.text}>Welcome Back! </Text>
-
           <View style={styles.inputContainer}>
             <TextInput
               value={email}
@@ -82,20 +80,17 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+
+    marginTop: 100, // Adjusted marginTop to position the text further up
   },
   textContainer: {
-    alignItems: "left",
-    // Removed marginBottom if the text container is at the bottom
+    alignItems: "center",
   },
   text: {
     color: "#fff",
     fontSize: 25, // Increased font size
     fontWeight: "bold",
-    textAlign: "left",
-    paddingLeft: 25,
-    marginBottom: 220,
+    textAlign: "center",
   },
   inputContainer: {
     width: "100%", // Adjusted for full width
@@ -138,7 +133,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#fff",
-
     textAlign: "center",
     fontSize: 20,
     fontWeight: "bold",

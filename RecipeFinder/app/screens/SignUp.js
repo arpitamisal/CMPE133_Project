@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {View, TextInput, Text, ImageBackground, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, StyleSheet} from "react-native";
+import { View, TextInput, Text, ImageBackground, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, StyleSheet } from "react-native";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
@@ -13,11 +13,8 @@ function SignUp(props) {
     setLoading(true);
     try {
       const response = await createUserWithEmailAndPassword(auth, email, password);
-      //console.log(response);
-      //alert("Account Created!");
       props.navigation.navigate("Dashboard"); // Navigate to Dashboard upon successful signup
     } catch (error) {
-      //console.log(error);
       alert("Registration failed: " + error.message);
     } finally {
       setLoading(false);
@@ -31,11 +28,9 @@ function SignUp(props) {
     >
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
         <View style={styles.content}>
-          {/* Text container moved here to be below the inputs */}
+          <Text style={styles.text}>Welcome Back! </Text>
         </View>
         <View style={styles.textContainer}>
-          <Text style={styles.text}>Welcome Back! </Text>
-
           <View style={styles.inputContainer}>
             <TextInput
               value={email}
@@ -87,8 +82,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textContainer: {
-    alignItems: "left",
-    // Removed marginBottom if the text container is at the bottom
+    alignItems: "center",
+    marginTop: 250, // Adjusted marginTop to position the text further up
   },
   text: {
     color: "#fff",
@@ -96,7 +91,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "left",
     paddingLeft: 25,
-    marginBottom: 220,
   },
   inputContainer: {
     width: "100%", // Adjusted for full width
