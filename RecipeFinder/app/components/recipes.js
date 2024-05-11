@@ -2,8 +2,12 @@ import React from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
 import MasonryList from '@react-native-seoul/masonry-list';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Recipes({ meals, categories }) {
+
+  const navigation = useNavigation();
+
   return (
     <View style={{ marginHorizontal: 16, marginTop: 12, marginBottom: 24 }}>
       <Text style={{ fontSize: hp(3), fontWeight: 'bold', color: '#333' }}>Recipes</Text>
@@ -14,7 +18,7 @@ export default function Recipes({ meals, categories }) {
             keyExtractor={(item) => item.idMeal.toString()}
             numColumns={2}
             showsVerticalScrollIndicator={false}
-            renderItem={({ item, index }) => <RecipeCard item={item} index={index} />}
+            renderItem={({ item, index }) => <RecipeCard item={item} index={index} navigation={navigation}/>}
             onEndReachedThreshold={0.1}
           />
         ) : (
@@ -25,12 +29,12 @@ export default function Recipes({ meals, categories }) {
   );
 }
 
-const RecipeCard = ({ item, index }) => {
+const RecipeCard = ({ item, index, navigation }) => {
   let isEven = index % 2 === 0;
   return (
     <Pressable
       style={{ width: '100%', paddingLeft: isEven ? 0 : 8, paddingRight: isEven ? 8 : 0, marginBottom: 16 }}
-      onPress={() => console.log('Recipe pressed:', item.strMeal)}
+      onPress={() => navigation.navigate('RecipeDetailScreen', {...item})}
     >
       <Image
         source={{ uri: item.strMealThumb }}

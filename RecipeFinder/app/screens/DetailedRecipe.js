@@ -1,162 +1,115 @@
-// DetailedRecipe.js
-import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-//import { ArrowLeftIcon, HeartIcon, ClockIcon, UserGroupIcon, FireIcon } from 'react-native-heroicons';
-//import { YouTubePlayer } from '@react-native-youtube-player/core';
+import { View, Text, ScrollView, Image } from "react-native";
+import React, { useEffect, useState } from 'react'
+import { StatusBar } from "expo-status-bar";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import axios from 'axios';
 
-const DetailedRecipe = ({ route }) => {
-  const { item } = route.params;
-  const navigation = useNavigation();
-  const [isFavourite, setIsFavourite] = useState(false);
+export default function DetailedRecipe(props) {
+  let item = props.route.params;
   const [meal, setMeal] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getMealData(item.idMeal);
-  }, []);
+  },[])
 
   const getMealData = async (id) => {
     try {
-      const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
-      const data = await response.json();
-      setMeal(data.meals[0]);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching recipe details:', error);
+      const response = await axios.get(`https://themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
+      setMeal(response.data.meals[0]);
+    } catch (err) {
+      console.log('Error:', err.message);
     }
   };
 
-  const handleBack = () => {
-    navigation.goBack();
+  const ingredientsIndexes = (meal)=>{
+    if(!meal) return [];
+    let indexes = [];
+    for(let i = 1; i<=20; i++){
+        if(meal['strIngredient'+i]){
+            indexes.push(i);
+        }
+    }
+
+    return indexes;
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-        {loading ? (
-          <Text>Loading...</Text>
-        ) : (
-          <>
-            <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-              <ArrowLeftIcon width={24} height={24} color="#2E8B57" />
-            </TouchableOpacity>
-            <Image source={{ uri: meal.strMealThumb }} style={styles.recipeImage} />
-            <View style={styles.detailsContainer}>
-              <Text style={styles.recipeTitle}>{meal.strMeal}</Text>
-              <View style={styles.infoContainer}>
-                <ClockIcon width={24} height={24} color="#2E8B57" />
-                <Text style={styles.infoText}>35 mins</Text>
+    <SafeAreaView>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Status bar */}
+        <StatusBar style="light" />
+        {/* Image */}
+        <View>
+          <Image
+            source={{ uri: item.strMealThumb }}
+            style={{ width: '95%', height: 200, borderRadius: 20, marginLeft: '2.5%' }}
+          />
+        </View>
+        {/* Main content */}
+        <View style={{ paddingHorizontal: 20, justifyContent: 'space-between', paddingTop: 32 }}>
+          {/* Name and area */}
+          <View style={{ marginBottom: 20 }}>
+            <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#333' }}>{item.strMeal}</Text>
+            <Text style={{ fontSize: 18, color: '#666' }}>{item.strArea}</Text>
+          </View>
+          {/* Misc */}
+          <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 20 }}>
+            {/* Clock Icon */}
+            <View style={{ alignItems: 'center' }}>
+              <Image source={require('../../assets/clock.png')} style={{ height: 65, width: 65 }} />
+              <View style={{ alignItems: 'center', paddingTop: 10 }}>
+                <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#333' }}>35</Text>
+                <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#333' }}>Mins</Text>
               </View>
-              <View style={styles.infoContainer}>
-                <UserGroupIcon width={24} height={24} color="#2E8B57" />
-                <Text style={styles.infoText}>03 Servings</Text>
-              </View>
-              <View style={styles.infoContainer}>
-                <FireIcon width={24} height={24} color="#2E8B57" />
-                <Text style={styles.infoText}>103 Cal</Text>
-              </View>
-              <TouchableOpacity onPress={() => setIsFavourite(!isFavourite)} style={styles.favoriteButton}>
-                <HeartIcon width={24} height={24} color={isFavourite ? '#FF0000' : '#2E8B57'} />
-              </TouchableOpacity>
-              <Text style={styles.ingredientsTitle}>Ingredients:</Text>
-              <Text style={styles.ingredientsList}>{meal.strIngredient1} - {meal.strMeasure1}</Text>
-              <Text style={styles.ingredientsList}>{meal.strIngredient2} - {meal.strMeasure2}</Text>
-              {/* Add more ingredients here */}
-              <Text style={styles.instructionsTitle}>Instructions:</Text>
-              <Text style={styles.instructionsText}>{meal.strInstructions}</Text>
-              {meal.strYoutube && (
-                <View style={styles.videoContainer}>
-                  <Text style={styles.videoTitle}>Recipe Video:</Text>
-                  <YouTubePlayer
-                    height={200}
-                    videoId={getYoutubeVideoId(meal.strYoutube)}
-                    play={false}
-                    onChangeState={() => {}}
-                  />
-                </View>
-              )}
             </View>
-          </>
-        )}
+            {/* Users Icon */}
+            <View style={{ alignItems: 'center' }}>
+              <Image source={require('../../assets/serving.png')} style={{ height: 65, width: 65 }} />
+              <View style={{ alignItems: 'center', paddingTop: 10 }}>
+                <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#333' }}>03</Text>
+                <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#333' }}>Servings</Text>
+              </View>
+            </View>
+            {/* Fire Icon */}
+            <View style={{ alignItems: 'center' }}>
+              <Image source={require('../../assets/Calorie.png')} style={{ height: 65, width: 65 }} />
+              <View style={{ alignItems: 'center', paddingTop: 10 }}>
+                <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#333' }}>340</Text>
+                <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#333' }}>Cal</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Ingredients */}
+          <View style={{ marginBottom: 20 }}>
+            <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#333' }}>Ingredients</Text>
+            <View style={{ marginTop: 10 }}>
+              {ingredientsIndexes(meal).map((i) => (
+                <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+                  <View style={{ height: 18, width: 18, backgroundColor: '#77AF54', borderRadius: 9 }} />
+                  <View style={{ marginLeft: 10, flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#333' }}>{meal['strMeasure'+i]}</Text>
+                    <Text style={{ fontSize: 18, color: '#666' }}>{meal['strIngredient'+i]}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </View>
+
+          {/* Instructions */}
+          <View style={{ marginBottom: 20 }}>
+            <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#333' }}>Instructions</Text>
+            {/* Split the instructions by newline characters and map over the resulting array */}
+            {meal?.strInstructions.split('\n').filter(line => line.trim() !== '').map((line, index) => (
+            // Render each line as a separate Text component with marginTop for spacing
+            <Text key={index} style={{ fontSize: 18, color: '#666', marginTop: index === 0 ? 10 : 5 }}>
+              {line}
+            </Text>
+            ))}
+          </View>
+        </View>
       </ScrollView>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF',
-  },
-  contentContainer: {
-    paddingBottom: 30,
-  },
-  backButton: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
-    zIndex: 1,
-  },
-  recipeImage: {
-    width: '100%',
-    height: 200,
-  },
-  detailsContainer: {
-    padding: 20,
-  },
-  recipeTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2E8B57',
-    marginBottom: 10,
-  },
-  infoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 5,
-  },
-  infoText: {
-    fontSize: 16,
-    color: '#2E8B57',
-    marginLeft: 5,
-  },
-  favoriteButton: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
-  },
-  ingredientsTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#2E8B57',
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  ingredientsList: {
-    fontSize: 16,
-    color: '#2E8B57',
-  },
-  instructionsTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#2E8B57',
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  instructionsText: {
-    fontSize: 16,
-    color: '#2E8B57',
-  },
-  videoContainer: {
-    marginTop: 20,
-  },
-  videoTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#2E8B57',
-    marginBottom: 10,
-  },
-});
-
-export default DetailedRecipe;
+    </SafeAreaView>
+  )
+}

@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   greenText: {
-    color: '#2E8B57',
+    color: '#77AF54',
   },
   searchBar: {
     flexDirection: 'row',
