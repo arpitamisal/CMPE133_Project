@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { heightPercentageToDP } from 'react-native-responsive-screen';
-import { categoryData } from '../constants/index';
 
 export default function Categories({ categories, activeCategory, setActiveCategory }) {
   return (
@@ -43,7 +42,7 @@ export default function Categories({ categories, activeCategory, setActiveCatego
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    maxHeight: 70,
+    maxHeight: 80,
     marginTop: 10,
   },
   scrollViewContent: {

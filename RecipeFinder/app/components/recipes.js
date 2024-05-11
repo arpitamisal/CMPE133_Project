@@ -12,7 +12,7 @@ export default function Recipes({ meals, categories }) {
     <View style={{ marginHorizontal: 16, marginTop: 12, marginBottom: 24 }}>
       <Text style={{ fontSize: hp(3), fontWeight: 'bold', color: '#333' }}>Recipes</Text>
       <View style={{ width: '100%', marginTop: 12 }}>
-        {meals && categories && meals.length > 0 && categories.length > 0 ? (
+        {meals ? (
           <MasonryList
             data={meals}
             keyExtractor={(item) => item.idMeal.toString()}
