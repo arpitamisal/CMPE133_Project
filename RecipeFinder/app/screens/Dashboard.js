@@ -5,6 +5,8 @@ import axios from 'axios';
 import Categories from '../components/categories';
 import Recipes from '../components/recipes';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const HomeScreen = () => {
   const [activeCategory, setActiveCategory] = useState('Beef');
@@ -26,6 +28,12 @@ const HomeScreen = () => {
 
   const handleChangeSearchQuery = (text) => {
     setSearchQuery(text);
+  };
+
+  const navigation = useNavigation();
+
+  const handleAvatarPress = () => {
+    navigation.navigate('PantryPage');
   };
 
   const getCategories = async () => {
@@ -53,13 +61,24 @@ const HomeScreen = () => {
         return;
       }
       
-      const response = await axios.get(`https://themealdb.com/api/json/v1/1/search.php?s=${searchQuery}`);
-      setSearchResults(response.data.meals || []);
+      // Search by name
+      const nameResponse = await axios.get(`https://themealdb.com/api/json/v1/1/search.php?s=${searchQuery}`);
+      
+      if (nameResponse.data.meals && nameResponse.data.meals.length > 0) {
+        // If results are found by name, set search results and return
+        setSearchResults(nameResponse.data.meals);
+        return;
+      }
+      
+      // If no results found by name, search by ingredient
+      const ingredientResponse = await axios.get(`https://themealdb.com/api/json/v1/1/filter.php?i=${searchQuery}`);
+      setSearchResults(ingredientResponse.data.meals || []);
     } catch (err) {
       console.log('Error:', err.message);
       // Handle error, show error message to the user, etc.
     }
   };
+  
 
   const clearSearch = () => {
     setSearchQuery('');
@@ -70,8 +89,10 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <SafeAreaView>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.topBar}>
-          <Image source={require('../../assets/images/avatar.png')} style={styles.avatar} />
+        <View style={styles.container}>
+          <TouchableOpacity style={styles.topBar} onPress={handleAvatarPress}>
+            <Image source={require('../../assets/Pantry.png')} style={styles.avatar} />
+          </TouchableOpacity>
         </View>
         <View style={styles.greetingContainer}>
           <Text style={styles.punchline}>Whip Up Magic with What's on Hand at <Text style={styles.greenText}>Home</Text></Text>
@@ -86,7 +107,7 @@ const HomeScreen = () => {
               onChangeText={handleChangeSearchQuery}
             />
             {searchResults.length > 0 && (
-              <TouchableOpacity style={styles.clearButton} onPress={clearSearch}>
+              <TouchableOpacity style={styles.searchButton} onPress={clearSearch}>
                 <Text>Clear</Text>
               </TouchableOpacity>
             )}
@@ -97,7 +118,7 @@ const HomeScreen = () => {
           
           {/* Display search results if available, otherwise render default category recipes */}
           {searchResults.length > 0 ? (
-            <View style={styles.searchResultsContainer}>
+            <View>
               <Text style={styles.searchResultsTitle}>Search Results:</Text>
               <Recipes meals={searchResults} />
             </View>
@@ -173,9 +194,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   searchResultsTitle: {
-    fontSize: 18,
+    fontSize: hp(3),
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginTop: 10,
+    marginLeft: 16,
   },
 });
 

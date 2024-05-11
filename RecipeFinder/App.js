@@ -5,6 +5,7 @@ import Login from "./app/screens/Login";
 import SignUp from "./app/screens/SignUp";
 import Dashboard from "./app/screens/Dashboard";
 import RecipeDetailScreen from "./app/screens/DetailedRecipe";
+import PantryPage from "./app/screens/PantryPage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -19,6 +20,7 @@ export default function App() {
         <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}/>
         <Stack.Screen name="Dashboard" component={Dashboard} options={{ headerShown: false }}/>
         <Stack.Screen name="RecipeDetailScreen" component={RecipeDetailScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="PantryPage" component={PantryPage} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
